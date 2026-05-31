@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container">
+    <div class="row justify-content-center align-items-center vh-100">
+        <div class="col-md-5">
+
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-5">
+
+                    <h3 class="text-center fw-bold text-primary mb-4">
+                        Student | Login
+                    </h3>
+
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        Invalid username or password.
+                    </div>
+                    {% endif %}
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Username:</label>
+                            {{ form.username }}
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Password: </label>
+                            {{ form.password }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 rounded-3">
+                            Enter
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <small>
+                            Don't have an account?
+                            <a href="{% url 'register' %}" class="text-decoration-none fw-semibold">
+                                Register
+                            </a>
+                        </small>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,122 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h3 class="mb-4">👨‍🎓 Manage Students</h3>
+
+    <!-- 🔍 Search + Filter -->
+    <form method="GET" class="row mb-3">
+
+        <div class="col-md-4">
+            <input type="text" name="q" class="form-control"
+       value="{{ request.GET.q }}"
+                   placeholder="Search by username">
+        </div>
+
+        <div class="col-md-3">
+            <select name="branch" class="form-control">
+                <option value="">All Branches</option>
+                <option value="CSE">CSE</option>
+                <option value="IT">IT</option>
+                <option value="ECE">ECE</option>
+                <option value="MECH">MECH</option>
+                <option value="CIVIL">CIVIL</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select name="status" class="form-control">
+                <option value="">All</option>
+                <option value="placed">Placed</option>
+                <option value="unplaced">Unplaced</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100">Filter</button>
+        </div>
+
+    </form>
+
+    {% if students %}
+<p class="text-success">
+    {{ students|length }} result(s) found
+</p>
+{% else %}
+<p class="text-danger">
+    No students match your filters
+</p>
+{% endif %}
+
+    <!-- 📊 Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>CGPA</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for student in students %}
+            <tr>
+
+                <!-- Name -->
+                <td>
+                    <strong>{{ student.user.username }}</strong>
+                </td>
+
+                <!-- Branch -->
+                <td>{{ student.branch }}</td>
+
+                <!-- CGPA -->
+                <td>{{ student.cgpa }}</td>
+
+                <!-- Placement Status -->
+                <td>
+                    {% if student.is_placed%}
+                        <span class="badge bg-success">Placed</span>
+                    {% else %}
+                        <span class="badge bg-warning">Unplaced</span>
+                    {% endif %}
+                </td>
+
+                <!-- Actions -->
+                <td>
+
+                    <a href="#" class="btn btn-sm btn-info">
+                        View
+                    </a>
+
+                    <a href=""
+                       class="btn btn-sm btn-danger">
+                        Delete
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted">
+                    No students found
+                </td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+{% endblock %}

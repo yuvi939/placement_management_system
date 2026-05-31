@@ -1,0 +1,18 @@
+<h3>{{ test.title }}</h3>
+
+<form method="POST" action="{% url 'submit_mock' test.id %}">
+    {% csrf_token %}
+
+    {% for q in questions %}
+    <div style="margin-bottom:20px;">
+        <p><strong>{{ forloop.counter }}. {{ q.question_text }}</strong></p>
+
+        <input type="radio" name="{{ q.id }}" value="{{ q.option1 }}"> {{ q.option1 }} <br>
+        <input type="radio" name="{{ q.id }}" value="{{ q.option2 }}"> {{ q.option2 }} <br>
+        <input type="radio" name="{{ q.id }}" value="{{ q.option3 }}"> {{ q.option3 }} <br>
+        <input type="radio" name="{{ q.id }}" value="{{ q.option4 }}"> {{ q.option4 }} <br>
+    </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-success">Submit</button>
+</form>

@@ -1,0 +1,8 @@
+<h3>Available Mock Tests</h3>
+
+{% for test in tests %}
+<div>
+    <h5>{{ test.company.company_name }} - {{ test.title }}</h5>
+    <a href="{% url 'take_mock' test.id %}" class="btn btn-primary">Start Test</a>
+</div>
+{% endfor %}

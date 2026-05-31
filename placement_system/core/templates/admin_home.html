@@ -1,0 +1,79 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<div class="container mt-4">
+
+    <h2 class="mb-4">⚙️ Admin Dashboard</h2>
+
+    <!-- Stats -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow-sm">
+                <h6>Students</h6>
+                <h3>{{ total_students }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow-sm">
+                <h6>Companies</h6>
+                <h3>{{ total_companies }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow-sm">
+                <h6>Applications</h6>
+                <h3>{{ total_applications }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3 text-center shadow-sm">
+                <h6>Selected</h6>
+                <h3 class="text-success">{{ total_selected }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mt-4">
+        <a href="/admin/" class="btn btn-dark">Django Admin Panel</a>
+        <a href="{% url 'manage_applications' %}" class="btn btn-primary">Company Panel</a>
+    </div>
+
+    <!-- Recent Applications -->
+    <div class="card mt-4 p-3 shadow-sm">
+        <h5>📄 Recent Applications</h5>
+        <table class="table">
+            <tr>
+                <th>Student</th>
+                <th>Company</th>
+                <th>Status</th>
+            </tr>
+
+            {% for app in recent_applications %}
+            <tr>
+                <td>{{ app.student.user.username }}</td>
+                <td>{{ app.company.company_name }}</td>
+                <td>{{ app.status }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- Upcoming Drives -->
+    <div class="card mt-4 p-3 shadow-sm">
+        <h5>🏢 Upcoming Drives</h5>
+
+        {% for company in upcoming_drives %}
+            <div class="border p-2 mb-2 rounded">
+                <strong>{{ company.company_name }}</strong> - {{ company.job_role }} <br>
+                <small>📅 {{ company.drive_date }}</small>
+            </div>
+        {% empty %}
+            <p>No upcoming drives</p>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

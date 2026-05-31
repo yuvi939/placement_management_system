@@ -1,0 +1,124 @@
+{% extends 'admin_base.html'%}
+{% block content %}
+<div class="container mt-4">
+    <style>
+    textarea {
+        width: 250px !important;
+        resize: none;
+    }
+</style>
+
+    <h2 class="mb-4 fw-bold">🏢 Manage Companies</h2>
+
+    <div class="row">
+
+        <!-- LEFT: Add Company -->
+        <!-- LEFT: Add Company -->
+<div class="col-md-4">
+    <div class="card shadow-sm p-4" style="border-radius:15px;">
+        <h5 class="mb-3 text-primary">➕ Add Company</h5>
+
+        <div class="text-danger">
+            {{ form.errors }}
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <span>Company Name</span>
+            <div class="mb-2">{{ form.company_name }}</div>
+
+            <!-- ✅ Image Field -->
+            <span>Company Image / Logo</span>
+            <div class="mb-3">{{ form.image }}</div>
+
+            <span>Job Role</span>
+            <div class="mb-2">{{ form.job_role }}</div>
+
+            <span>CTC (in LPA)</span>
+            <div class="mb-2">{{ form.ctc }}</div>
+
+            <span>Eligible CGPA</span>
+            <div class="mb-2">{{ form.eligibility_cgpa }}</div>
+
+            <span>Branches</span>
+            <div class="mb-2">{{ form.allowed_branches }}</div>
+
+            <span>Drive Date</span>
+            <div class="mb-2">{{ form.drive_date }}</div>
+
+            <span>Deadline</span>
+            <div class="mb-2">{{ form.deadline }}</div>
+
+            <span>Notice</span>
+            <div class="mb-2">{{ form.drive_notice }}</div>
+
+            <span>Description</span>
+            <div class="mb-3">{{ form.description }}</div>
+
+            <button type="submit" class="btn btn-success w-100 mt-2">
+                Add Company
+            </button>
+        </form>
+    </div>
+</div>
+
+        <!-- RIGHT: Company List -->
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4" style="border-radius:15px;">
+                <h5 class="mb-3 text-primary">📋 Company List</h5>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Company</th>
+                                <th>Role</th>
+                                <th>CTC</th>
+                                <th>Drive</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for company in companies %}
+                        <tr>
+
+                            <td>
+                                <strong>{{ company.company_name }}</strong><br>
+                                <small class="text-muted">
+                                    Deadline: {{ company.deadline }}
+                                </small>
+                            </td>
+
+                            <td>{{ company.job_role }}</td>
+                            <td class="text-success fw-bold">{{ company.ctc }}</td>
+                            <td>{{ company.drive_date }}</td>
+
+                            <td>
+                                <a href="{% url 'delete_company' company.id %}" 
+                                   class="btn btn-danger btn-sm">
+                                    Delete
+                                </a>
+                            </td>
+
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">
+                                No companies added yet
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

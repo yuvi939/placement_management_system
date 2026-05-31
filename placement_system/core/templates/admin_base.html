@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            height: 100vh;
+            width: 240px;
+            position: fixed;
+            background: #1e293b;
+            color: white;
+            padding-top: 20px;
+        }
+
+        .sidebar a {
+            color: #cbd5f5;
+            display: block;
+            padding: 12px 20px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: #334155;
+            color: white;
+        }
+
+        .sidebar .active {
+            background: #4e73df;
+            color: white;
+        }
+
+        .content {
+            margin-left: 240px;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h4 class="text-center mb-4">⚙️ Admin</h4>
+
+    <a href="{% url 'admin_home' %}" class="active">🏠 Dashboard</a>
+    <a href="{% url 'manage_company' %}">🏢 Companies</a>
+    <a href="{%url 'manage_applications'%}">📄 Applications</a>
+    <a href="{%url 'manage_students'%}">👨‍🎓 Students</a>
+    <a href="{% url 'logout' %}">🚪 Logout</a>
+</div>
+
+<!-- Main Content -->
+<div class="content">
+    {% block content %}
+    {% endblock %}
+</div>
+
+</body>
+</html>

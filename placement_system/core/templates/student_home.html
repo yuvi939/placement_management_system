@@ -1,0 +1,309 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <title>Document</title>
+    <style>
+
+        .welcome-box {
+            background: linear-gradient(90deg, #1cc88a, #4e73df);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .card-box {
+            border-radius: 15px;
+            transition: 0.3s;
+        }
+
+        .card-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        footer {
+            background: #4e73df;
+            color: white;
+            padding: 15px 0;
+            margin-top: 40px;
+        }
+    </style>
+<body>
+   
+    
+<div class="container">
+
+    <!-- Welcome Section -->
+    <div class="welcome-box text-center">
+        <h2>Student Dashboard</h2>
+        <p>Track your applications and explore new opportunities 🚀</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mt-4">
+        <div class="col-md-4 mb-4">
+            <div class="card card-box shadow-sm text-center p-3">
+                <h4>📄 Applications</h4>
+                <h2 class="text-primary">{{ total_applications }}</h2>
+                <p class="text-muted">Total Applied Companies</p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card card-box shadow-sm text-center p-3">
+                <h4>🏢 Upcoming Drives</h4>
+                <h2 class="text-success">{{ companies|length }}</h2>
+                <p class="text-muted">Active Recruitment Drives</p>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card card-box shadow-sm text-center p-3">
+                <h4>🎯 Selected</h4>
+                <h2 class="text-warning">{{ total_selected }}</h2>
+                <p class="text-muted">Placement Offers</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+    <div class="row">
+
+        {% for company in companies %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100 border-0 card-hover" style="border-radius:15px;">
+                
+                <div class="card-body">
+                    {% if company.image %}
+                        <img src="{{ company.image.url }}" class="card-img-top" style="height:150px; object-fit:cover;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x150" class="card-img-top">
+                    {% endif %}
+
+                    <!-- Company Name + Status -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="text-primary fw-bold mb-0">
+                            {{ company.company_name }}
+                        </h5>
+
+                        {% if company.id in applied_company_ids %}
+                            <span class="badge bg-success">Applied</span>
+                        {% else %}
+                            <span class="badge bg-secondary">New</span>
+                        {% endif %}
+                    </div>
+
+                    <hr>
+
+                    <p class="mb-1"><strong>💼 Role:</strong> {{ company.job_role }}</p>
+                    <p class="mb-1"><strong>💰 CTC:</strong> {{ company.ctc }}</p>
+                    <p class="mb-1"><strong>📢 Notice:</strong> {{ company.drive_notice }}</p>
+
+                    <p class="text-muted mt-2" style="font-size: 14px;">
+                        {{ company.description|truncatewords:12 }}
+                    </p>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="card-footer bg-white border-0">
+
+                    <div class="d-grid gap-2">
+
+                        <a href="{% url 'company_detail' company.id %}" 
+                           class="btn btn-outline-primary">
+                            View Details
+                        </a>
+
+                        {% if company.id in applied_company_ids %}
+                            <button class="btn btn-secondary" disabled>
+                                Already Applied
+                            </button>
+                        {% else %}
+                            <button class="btn btn-success"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#applyModal{{ company.id }}">
+                                Apply Now
+                            </button>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- Not Eligible Modal -->
+<div class="modal fade" id="notEligibleModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:15px;">
+
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Application Failed</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body text-center">
+        <h5 class="text-danger">❌ Not Eligible</h5>
+        <p>You do not meet the eligibility criteria for this company.</p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+        <!-- ✅ Modal -->
+        <div class="modal fade" id="applyModal{{ company.id }}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content" style="border-radius:15px;">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm Application</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body text-center">
+                        <h5>{{ company.company_name }}</h5>
+                        <p>Role: {{ company.job_role }}</p>
+                        <p>Are you sure you want to apply?</p>
+
+                        <p class="text-warning">
+                            ⚠️ This action cannot be undone
+                        </p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+
+                        <form method="POST" action="{% url 'apply_company' company.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">
+                                Yes, Apply
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        {% empty %}
+        <p class="text-center">No eligible companies available.</p>
+        {% endfor %}
+
+    </div>
+</div>
+
+    <!-- Application Status -->
+   <div class="card shadow-sm p-4 mt-4" style="border-radius:15px;">
+    <h5 class="mb-3">📊 Application Status</h5>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Company</th>
+                    <th>Role</th>
+                    <th>Status / Details</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for app in applications %}
+            <tr>
+
+                <!-- Company -->
+                <td>
+                    <strong class="text-primary">
+                        {{ app.company.company_name }}
+                    </strong>
+                </td>
+
+                <!-- Role -->
+                <td>
+                    {{ app.company.job_role }}
+                </td>
+
+                <!-- Status + Details -->
+                <td>
+
+                    {% if app.status == "Applied" %}
+                        <span class="badge bg-warning">Under Review</span>
+
+                    {% elif app.status == "Selected" %}
+                        <span class="badge bg-success">Selected</span>
+
+                        <!-- Interview Box -->
+                        {% if app.interview_date %}
+                        <div class="mt-2 p-2 border border-success rounded bg-light">
+
+                            <small>
+                                📅 <strong>{{ app.interview_date }}</strong><br>
+                                ⏰ {{ app.interview_time }} <br>
+                                📍 {{ app.interview_mode }}
+                            </small>
+
+                            {% if app.interview_mode == "Online" and app.interview_link %}
+                                <br>
+                                <a href="{{ app.interview_link }}" target="_blank"
+                                   class="btn btn-sm btn-success mt-2 w-100">
+                                    Join Interview
+                                </a>
+                            {% endif %}
+
+                        </div>
+                        {% endif %}
+
+                    {% elif app.status == "Rejected" %}
+                        <span class="badge bg-danger">Rejected</span>
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+            <tr>
+                <td colspan="3" class="text-center text-muted">
+                    No applications yet
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
+</div>
+
+<!-- Footer -->
+<footer class="text-center">
+    <div class="container">
+        <p class="mb-0">© 2026 Placement Management System | Student Panel</p>
+    </div>
+</footer>
+
+{% if messages %}
+<script>
+    window.onload = function() {
+        var modal = new bootstrap.Modal(document.getElementById('notEligibleModal'));
+        modal.show();
+    }
+</script>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

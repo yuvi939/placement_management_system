@@ -1,0 +1,128 @@
+<!-- Bootstrap 5 Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="container">
+
+    <!-- Brand -->
+    <a class="navbar-brand fw-bold" href="{% url 'guest_home' %}">
+      Placement Portal
+    </a>
+
+    <!-- Toggle -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarContent">
+
+      <!-- Left Side -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        {% if user.is_authenticated %}
+
+            {% if user.is_superuser %}
+                <!-- ADMIN VIEW -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin_home' %}">
+                        Admin Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="">
+                        Manage Students
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'manage_company'%}">
+                        Manage Companies
+                    </a>
+                </li>
+
+            {% else %}
+                <!-- STUDENT VIEW -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'student_profile'%}">
+                        My Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard' %}">
+                        Jobs
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'student_home' %}">
+                        student Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">logout</a>
+                </li>
+            {% endif %}
+
+        {% else %}
+            <!-- GUEST VIEW -->
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    Home
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">
+                    About
+                </a>
+            </li>
+             
+        {% endif %}
+
+      </ul>
+
+      <!-- Right Side -->
+      <ul class="navbar-nav ms-auto">
+
+        {% if user.is_authenticated %}
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle"
+                   href="#" role="button"
+                   data-bs-toggle="dropdown">
+                    {{ user.username }}
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end">
+
+                    {% if not user.is_superuser %}
+                    <li>
+                        <a class="dropdown-item" href="">
+                            Profile
+                        </a>
+                    </li>
+                    {% endif %}
+
+                   
+                </ul>
+            </li>
+            
+
+        {% else %}
+
+            <li class="nav-item">
+                <a class="btn btn-light btn-sm me-2"
+                   href="{% url 'login' %}">
+                    Login
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-warning btn-sm"
+                   href="{% url 'register' %}">
+                    Register
+                </a>
+            </li>
+
+        {% endif %}
+
+      </ul>
+
+    </div>
+  </div>
+</nav>

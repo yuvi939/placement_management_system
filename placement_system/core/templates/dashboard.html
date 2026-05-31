@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Welcome Section -->
+    <div class="p-4 mb-4 text-white rounded" style="background: linear-gradient(90deg, #4e73df, #1cc88a);">
+        <h2>Welcome, {{ user.username }} 👋</h2>
+        <p class="mb-0">Explore and apply to companies that match your profile</p>
+    </div>
+
+    <!-- Section Title -->
+    <h4 class="mb-3 text-primary">🎯 Available Companies</h4>
+
+    <div class="row">
+
+        {% for company in companies %}
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow-sm h-100" style="border-radius: 15px; transition: 0.3s;">
+                
+                <div class="card-body">
+                    {% if company.image %}
+                        <img src="{{ company.image.url }}" class="card-img-top" style="height:150px; object-fit:cover;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x150" class="card-img-top">
+                    {% endif %}
+
+                    <!-- Company Name -->
+                    <h5 class="text-primary fw-bold">
+                        {{ company.company_name }}
+                    </h5>
+
+                    <hr>
+
+                    <p><strong>💼 Role:</strong> {{ company.job_role }}</p>
+                    <p><strong>💰 CTC:</strong> {{ company.ctc }}</p>
+                    <p><strong>📢 Notice:</strong> {{ company.drive_notice }}</p>
+
+                    <p class="text-muted" style="font-size: 14px;">
+                        {{ company.description|truncatewords:15 }}
+                    </p>
+
+                </div>
+
+                <!-- Apply Button -->
+                <div class="card-footer bg-white border-0">
+
+                    <form method="POST" action="{% url 'apply_company' company.id %}">
+                        {% csrf_token %}
+                        <button class="btn btn-success w-100">
+                            Apply Now
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p class="text-muted">No eligible companies available.</p>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <!-- Logout -->
+    <div class="text-center mt-4">
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="btn btn-danger px-4">Logout</button>
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h3 class="mb-4">📄 Manage Applications</h3>
+
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle table-hover">
+
+            <thead class="table-light">
+                <tr>
+                    <th>Student</th>
+                    <th>Department</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                    <th width="30%">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for app in applications %}
+            <tr>
+
+                <!-- Student -->
+                <td>
+                    <strong>{{ app.student.user.username }}</strong>
+                </td>
+
+                <!-- Department -->
+                <td>
+                    {{ app.student.branch }}
+                </td>
+
+                <!-- Company -->
+                <td>
+                    <strong>{{ app.company.company_name }}</strong><br>
+                    <small class="text-muted">{{ app.company.job_role }}</small>
+                </td>
+
+                <!-- Status -->
+                <td>
+                    {% if app.status == "Applied" %}
+                        <span class="badge bg-warning">Pending</span>
+                    {% elif app.status == "Selected" %}
+                        <span class="badge bg-success">Selected</span>
+                    {% else %}
+                        <span class="badge bg-danger">Rejected</span>
+                    {% endif %}
+                </td>
+
+                <!-- Action -->
+                <td>
+
+                {% if request.user.is_superuser %}
+
+                    {% if app.status == "Applied" %}
+
+                    <!-- SELECT FORM -->
+                    <form method="POST" action="{% url 'update_application' app.id %}" class="mb-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="Selected">
+
+                        <div class="border p-3 rounded bg-light">
+
+                            <label class="small fw-bold">Interview Date</label>
+                            <input type="date" name="interview_date" class="form-control mb-2" required>
+
+                            <label class="small fw-bold">Interview Time</label>
+                            <input type="time" name="interview_time" class="form-control mb-2" required>
+
+                            <label class="small fw-bold">Mode</label>
+                            <select name="interview_mode" class="form-control mb-2">
+                                <option value="Online">Online</option>
+                                <option value="Offline">Offline</option>
+                            </select>
+
+                            <input type="url" name="interview_link"
+                                   placeholder="Meeting Link (only if online)"
+                                   class="form-control mb-2">
+
+                            <button type="submit" class="btn btn-success w-100">
+                                ✔ Select & Schedule
+                            </button>
+
+                        </div>
+                    </form>
+
+                    <!-- REJECT -->
+                    <form method="POST" action="{% url 'update_application' app.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="Rejected">
+
+                        <button type="submit" class="btn btn-outline-danger w-100">
+                            ✖ Reject
+                        </button>
+                    </form>
+
+                    {% else %}
+                        <span class="text-muted">No action required</span>
+                    {% endif %}
+
+                {% else %}
+                    <span class="text-muted">Restricted</span>
+                {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted">
+                    No applications found
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

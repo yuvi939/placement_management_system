@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>{{ company.company_name }}</h2>
+
+    <hr>
+
+    <p><strong>Role:</strong> {{ company.job_role }}</p>
+    <p><strong>CTC:</strong> {{ company.ctc }}</p>
+    <p><strong>Eligibility CGPA:</strong> {{ company.eligibility_cgpa }}</p>
+    <p><strong>Branch:</strong> {{ company.allowed_branches }}</p>
+    <p><strong>Drive Date:</strong> {{ company.drive_date }}</p>
+    <p><strong>Description:</strong> {{ company.description }}</p>
+
+    <br>
+
+    {% if already_applied %}
+        <button class="btn btn-secondary" disabled>Already Applied</button>
+    {% else %}
+        <form method="POST" action="{% url 'apply_company' company.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Apply Now</button>
+        </form>
+    {% endif %}
+
+</div>
+
+{% endblock %}
